@@ -60,22 +60,21 @@ import reader
 
 identities = [trex.trex(parser.pushstream(
     lex.lex(reader.stringreader(s)))) for s in 
-              ['"0";"+";x:.;^>add>',     # 0 + x == x
-               'x:.;"+";"0";^>add>',     # x + 0 == x
-               'x:.;"-";"0";^>add>',     # x - 0 == x
-               'x:"OMEGA";"+";.;^>add>', # OMEGA + x == OMEGA
-               'x:"OMEGA";"-";.;^>add>', # OMEGA - x == OMEGA
-               '.;"+";x:"OMEGA";^>add>', # x + OMEGA == OMEGA
+              ['"0"       ; "+" ; x:.       ;^>add>',     # 0 + x == x
+               'x:.       ; "+" ; "0"       ;^>add>',     # x + 0 == x
+               'x:.       ; "-" ; "0"       ;^>add>',     # x - 0 == x
+               'x:"OMEGA" ; "+" ; .         ;^>add>',     # OMEGA + x == OMEGA
+               'x:"OMEGA" ; "-" ; .         ;^>add>',     # OMEGA - x == OMEGA
+               '.         ; "+" ; x:"OMEGA" ;^>add>',     # x + OMEGA == OMEGA
 
-               '"1";"*";x:.;^>mul>',     # 1 * x == x
-               'x:.;"*";"1";^>mul>',     # x * 1 == x
-               'x:.;"/";"1";^>mul>',     # x / 1 == x
-               'x:"0";"*";.;^>mul>',     # 0 * x == 0
-               'x:"0";"/";.;^>mul>',     # 0 / x == 0
-               '.;"*";x:"0";^>mul>',     # x * 0 == 0
-           ]]
+               '"1"       ; "*" ; x:.       ;^>mul>',     # 1 * x == x
+               'x:.       ; "*" ; "1"       ;^>mul>',     # x * 1 == x
+               'x:.       ; "/" ; "1"       ;^>mul>',     # x / 1 == x
+               'x:"0"     ; "*" ; .         ;^>mul>',     # 0 * x == 0
+               'x:"0"     ; "/" ; .         ;^>mul>',     # 0 / x == 0
+               '.         ; "*" ; x:"0"     ;^>mul>']]    # x * 0 == 0
 
-assert all(i.parse() for i in identities)
+assert all(i.parse() and i.atend() for i in identities)
 
 def simplify_arith(node):
     c = node.children

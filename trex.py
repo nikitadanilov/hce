@@ -146,7 +146,7 @@ if __name__ == "__main__":
     import block
 
     te = trex(parser.pushstream(lex.lex(reader.filereader(sys.stdin))))
-    print(te.parse())
+    assert te.parse()
     print(te.pprint())
 
     program = """
@@ -169,8 +169,9 @@ if __name__ == "__main__":
                      z1 : xx |]]]]]
 """
     
-    s = grammar.S(parser.pushstream(lex.lex(reader.stringreader("[x:x|x:=0*(1+1)]"))))
+    s = grammar.S(parser.pushstream(lex.lex(reader.stringreader(program))))
     s.parse()
+    assert s.atend() 
     s.visit(grammar.parentset)
     s.visit(grammar.tokenset)
     s.reform([exp.simplify_depth], [exp.simplify_arith])

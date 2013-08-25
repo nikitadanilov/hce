@@ -24,6 +24,12 @@ class node(tree.tnode):
     def pos(self):
         return self.start.pos
 
+    def atend(self):
+        self.push()
+        eof = (self.seq.nextsafe() == None)
+        self.rollback()
+        return eof
+
     def oneofdict(self, tokendict):
         token = self.seq.nextsafe()
         if token:

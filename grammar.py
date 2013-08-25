@@ -43,6 +43,7 @@ if __name__ == "__main__":
     print(s.parse())
     print(s.pprint())
     print(s.printexp())
+    assert s.atend() 
 
     s.visit(parentset)
     s.visit(tokenset)

@@ -7,9 +7,7 @@ seq    ::= [ term { '|' term } ]
 term   ::= factor { ';' factor }
 factor ::= unary [ '*' | '+' ]
 unary  ::= [ identifier ':' ] atom
-atom   ::= '.' | string | identifier | '^' | '(' trex ')
-
-
+atom   ::= '.' | string | identifier | '^' | '(' trex ')'
 '''
 
 class trexnode(parser.node):

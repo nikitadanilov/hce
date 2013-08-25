@@ -116,7 +116,7 @@ class atom(trexnode):
             if (ttype == lex.dot or \
                 (ttype == lex.stringliteral and \
                  parser.istoken(node, val[1:-1])) or \
-                (ttype == lex.identifier and node.name() == val)):
+                (ttype == lex.identifier and node.__class__.__name__ == val)):
                 ctx.pos += 1
                 return True
         return False

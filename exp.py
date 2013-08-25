@@ -77,8 +77,7 @@ identities = [trex.trex(parser.pushstream(
 assert all(i.parse() and i.atend() for i in identities)
 
 def simplify_arith(node):
-    c = node.children
-    if not (type(node) in {add, mul}) or len(c) < 3:
+    if not (type(node) in {add, mul}) or len(node.children) < 3:
         return False
 
     for i in identities:

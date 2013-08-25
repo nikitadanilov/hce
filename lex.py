@@ -3,11 +3,21 @@ import string
 import unicodedata
 
 import reader
+import parser
 
-class token(object):
+class token(parser.node):
     def __init__(self, body, pos):
-        self.body = body
-        self.pos  = pos
+        self.body  = body
+        self.pos   = pos
+        self.start = self
+        self.end   = self
+        self.children = []
+
+    def name(self):
+        return '"' + self.body + '"'
+
+    def printexp(self):
+        return self.body
 
     def __str__(self):
         return "{}:{}@{}".format(type(self), self.body, self.pos)

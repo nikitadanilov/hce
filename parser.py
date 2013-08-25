@@ -1,7 +1,6 @@
 import sys
 
 import reader
-import lex
 import tree
 
 class node(tree.tnode):
@@ -33,9 +32,10 @@ class node(tree.tnode):
     def oneofdict(self, tokendict):
         token = self.seq.nextsafe()
         if token:
+            token.seq = self.seq
             for ttype, retval in tokendict.items():
                 if isinstance(token, ttype):
-                    self.children.append(tokennode(token, self.seq))
+                    self.children.append(token)
                     return retval
         return False
 
@@ -116,20 +116,6 @@ ASSOC_LEFT  = 1
 ASSOC_RIGHT = 2
 ASSOC_NONE  = 3
 
-class tokennode(node):
-    def __init__(self, token, seq):
-        node.__init__(self, seq)
-        self.token = token
-        self.start = token
-        self.end   = token
-        self.children = []
-
-    def name(self):
-        return '"' + self.token.body + '"'
-
-    def printexp(self):
-        return self.token.body
-
 class pushstream(object):
     def __init__(self, it):
         self.it    = it.__iter__()
@@ -187,5 +173,6 @@ class semanticserror(languageerror):
     pass
 
 def istoken(node, body):
-    return isinstance(node, tokennode) and node.token.body == body
+    return isinstance(node, lex.token) and node.body == body
 
+import lex

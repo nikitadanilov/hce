@@ -40,7 +40,7 @@ def blockset(node, parent):
 def declsset(node, parent):
     if isinstance(node, decl):
         v = node.children[0]
-        name = v.token.body
+        name = v.body
         block = node.block
         if name in allnames(block):
             raise duplicatename(v.start, v.name(), allnames(block)[name])
@@ -57,9 +57,8 @@ def allnames(node):
     return names
 
 def namecheck(node, parent):
-    if isinstance(node, parser.tokennode) and \
-       isinstance(node.token, lex.identifier):
-        if not node.token.body in allnames(node):
+    if isinstance(node, lex.token) and isinstance(node, lex.identifier):
+        if not node.body in allnames(node):
             raise unknownname(node.start, node.name())
     return True
 

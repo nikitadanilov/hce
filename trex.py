@@ -71,7 +71,7 @@ class factor(trexnode):
             i = 0
             while self.children[0].match(ctx):
                 i += 1
-            minnr = {"*" : 0, "+" : 1}[self.children[1].token.body]
+            minnr = {"*" : 0, "+" : 1}[self.children[1].body]
             return i >= minnr
 
 class unary(trexnode):
@@ -87,7 +87,7 @@ class unary(trexnode):
         pos = ctx.pos
         result = self.children[-1].match(ctx)
         if result and len(self.children) > 1 and pos < len(ctx.nodes):
-            key = self.children[0].token.body
+            key = self.children[0].body
             assert not key in ctx.out
             ctx.out[key] = ctx.nodes[pos]
         return result
@@ -103,7 +103,7 @@ class atom(trexnode):
             return next
 
     def check(self, ctx):
-        token = self.children[0].token
+        token = self.children[0]
         ttype = type(token)
         val   = token.body
         if ctx.pos == len(ctx.nodes):

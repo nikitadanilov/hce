@@ -210,7 +210,7 @@ class lex(object):
         count = 0
         self.word = ""
 
-        # keyword of punctuation
+        # keyword or punctuation
         #
         # goes before number, because ".1" is *not* a valid number
         for word, ttype in punctuation.items():

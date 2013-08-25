@@ -89,31 +89,6 @@ def simplify_arith(node):
             node.children = [ctx.out["x"]]
             return True
     return False
-        
-def tmp(node):
-    def eq(pos, val):
-        return parser.istoken(c[pos], val)
-
-    assert len(c) == 3
-    if isinstance(node, add):
-        if eq(0, "0") and eq(1, "+"):                       # 0 + x == x
-            c[0:2] = []
-        elif eq(2, "0") and (eq(1, "+") or eq(1, "-")):     # x + 0 == x
-            c[1:3] = []                                     # x - 0 == x
-        elif eq(0, "OMEGA") and (eq(1, "+") or eq(1, "-")): # O + x == O
-            c[1:3] = []                                     # O - x == O
-        elif eq(2, "OMEGA") and eq(1, "+"):                 # x + O == O
-            c[0:2] = []
-    elif isinstance(node, mul):
-        if eq(0, "1") and eq(1, "*"):                       # 1 * x == x
-            c[0:2] = []
-        elif eq(2, "1") and (eq(1, "*") or eq(1, "/")):     # x * 1 == x
-            c[0:3] = []                                     # x / 1 == x
-        elif eq(0, "0") and (eq(1, "*") or eq(1, "/")):     # 0 * x == 0
-            c[0:3] = []                                     # 0 / x == 0
-        elif eq(2, "0") and eq(1, "*"):                     # x * 0 == 0
-            c[0:2] = []
-    return len(c) != 3
 
 import stmt
 import block

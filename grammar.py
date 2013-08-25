@@ -9,7 +9,7 @@ class S(parser.node):
 S     ::= block
 block ::= '[' decls '|' stmts ']'
 stmts ::= [ stmt { ';' stmt } ]
-stmt  ::= assign | block
+stmt  ::= assgn | block
 assgn ::= identifier ':=' exp
 decls ::= [ decl { ';' decl } ]
 decl  ::= identifier ':' identifier

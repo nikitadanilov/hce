@@ -35,8 +35,8 @@ class tnode(object):
     def reform(self, mod, modchildren):
         def ref():
             for m in mod:
-                reformed = reduce(lambda x, y: x + y, 
-                                  [m(c) for c in self.children], [])
+                reformed = [inner for outer in [m(c) for c in self.children] 
+                            for inner in outer]
                 if self.children != reformed:
                     self.children = reformed
                     return True

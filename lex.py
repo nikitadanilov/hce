@@ -171,7 +171,7 @@ BASES = {
 class lex(object):
     class lexerror(Exception):
         def __init__(self, lex, error):
-            print "Lexical error: '{}' at {}".format(error, str(lex.reader.posget()))
+            print("Lexical error: '{}' at {}".format(error, str(lex.reader.posget())))
 
     class notoken(lexerror):
         def __init__(self, lex):
@@ -296,7 +296,8 @@ class lex(object):
             ch = self.reader.look(count, 1)
             if ch == "":
                 break
-            uc = unicodedata.category(unicode(ch, "utf-8"))[0]
+            # unicode(ch) for Python2
+            uc = unicodedata.category(ch)[0]
             if ch == "_" or uc == "L" or (count > 0 and uc == "N"):
                 count += 1
                 self.word += ch

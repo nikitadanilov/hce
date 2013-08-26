@@ -6,17 +6,17 @@ class block(parser.node):
         parser.node.__init__(self, seq)
         self.decls = {}
 
-    def parse(self):
+    def parse0(self):
         return self.oneof([lex.left_bracket]) and \
             self.parseadd(decls) and self.oneof([lex.bar]) and \
             self.parseadd(stmt.stmts) and self.oneof([lex.right_bracket])
 
 class decls(parser.node):
-    def parse(self):
+    def parse0(self):
         return self.nlist(decl, [lex.semicolon], parser.ASSOC_NONE, 0)
 
 class decl(parser.node):
-    def parse(self):
+    def parse0(self):
         return self.oneof([lex.identifier]) and \
             self.oneof([lex.colon]) and self.oneof([lex.identifier])
 

@@ -2,30 +2,30 @@ import parser
 import lex
 
 class exp(parser.node):
-    def parse(self):
+    def parse0(self):
         return self.parseadd(logic)
 
 class logic(parser.node):
-    def parse(self):
+    def parse0(self):
         return self.nlist(order, [lex.land, lex.lor, lex.lergo], 
                           parser.ASSOC_LEFT, 1) 
 
 class order(parser.node):
-    def parse(self):
+    def parse0(self):
         return self.nlist(add, [lex.lt, lex.gt, lex.le, 
                                 lex.ge, lex.eq, lex.ne], parser.ASSOC_LEFT, 1)
 
 class add(parser.node):
-    def parse(self):
+    def parse0(self):
         return self.nlist(mul, [lex.plus, lex.minus], parser.ASSOC_LEFT, 1)
 
 class mul(parser.node):
-    def parse(self):
+    def parse0(self):
         return self.nlist(unary, [lex.asterisk, 
                                   lex.divide, lex.mod], parser.ASSOC_LEFT, 1)
 
 class unary(parser.node):
-    def parse(self):
+    def parse0(self):
         self.push()
         if self.oneof([lex.plus, lex.minus, lex.lnot]): 
             self.pop()
@@ -34,7 +34,7 @@ class unary(parser.node):
         return self.parseadd(atom)
 
 class atom(parser.node):
-    def parse(self):
+    def parse0(self):
         n = self.oneofdict({lex.number : True, lex.identifier : True,
                                lex.stringliteral : True, lex.left_paren : +2})
         if n == +2:

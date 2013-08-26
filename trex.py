@@ -103,7 +103,6 @@ class atom(trexnode):
     def check(self, ctx):
         token = self.children[0]
         ttype = type(token)
-        val   = token.body
         if ctx.pos == len(ctx.nodes):
             return ttype == lex.caret
         elif ttype == lex.left_paren:
@@ -113,8 +112,9 @@ class atom(trexnode):
             node = ctx.nodes[ctx.pos]
             if (ttype == lex.dot or \
                 (ttype == lex.stringliteral and \
-                 parser.istoken(node, val[1:-1])) or \
-                (ttype == lex.identifier and node.__class__.__name__ == val)):
+                 parser.istoken(node, token.value)) or \
+                (ttype == lex.identifier and \
+                 node.__class__.__name__ == token.body)):
                 ctx.pos += 1
                 return True
         return False

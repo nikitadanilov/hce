@@ -18,7 +18,7 @@ class node(tree.tnode):
         return "(" + " ".join([ x.printexp() for x in self.children ]) + ")"
 
     def parse(self):
-        return False
+        return self.parse0()
 
     def pos(self):
         return self.start.pos

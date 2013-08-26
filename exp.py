@@ -35,12 +35,12 @@ class unary(parser.node):
 
 class atom(parser.node):
     def parse(self):
-        next = self.oneofdict({lex.number : True, lex.identifier : True,
+        n = self.oneofdict({lex.number : True, lex.identifier : True,
                                lex.stringliteral : True, lex.left_paren : +2})
-        if next == +2:
+        if n == +2:
             return self.parseadd(exp) and self.oneof([lex.right_paren])
         else:
-            return next
+            return n
 
 
 def simplify_depth(node):

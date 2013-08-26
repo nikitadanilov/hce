@@ -125,13 +125,9 @@ class number(valued):
         self.floated = floated
         if floated:
             self.value = float(body)
-        elif radix == 0:
-            self.value = int(body)
         else:
-            self.value = 0
-            for ch in body[2:]:
-                n = "0123456789abcdef".find(ch)
-                self.value = self.value * radix + n
+            self.value = int(body, base = 0)
+        print(body, " -> ", self.value)
 
 class stringliteral(valued):
     def __init__(self, body, pos):
@@ -180,7 +176,7 @@ BASES = {
     "d" : [ 10, string.digits ],
     "x" : [ 16, string.hexdigits ],
     "o" : [  8, string.octdigits ],
-    "t" : [  2, "01" ]
+    "b" : [  2, "01" ]
 }
 
 class lex(object):
@@ -255,7 +251,7 @@ class lex(object):
                 break
             count += 1
             if count == 1 and ch == "0":
-                allowed = string.digits + "dxot.eE"
+                allowed = string.digits + "dxob.eE"
             elif ch in BASES:
                 radix   = BASES[ch][0]
                 allowed = BASES[ch][1]

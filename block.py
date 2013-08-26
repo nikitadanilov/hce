@@ -57,7 +57,7 @@ def allnames(node):
     return names
 
 def namecheck(node, parent):
-    if isinstance(node, lex.token) and isinstance(node, lex.identifier):
+    if isinstance(node, lex.identifier):
         if not node.body in allnames(node):
             raise unknownname(node.start, node.name())
     return True

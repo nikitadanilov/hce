@@ -115,48 +115,63 @@ class lnot(op, fixed):
 class lergo(op, fixed):
     pass
 
-class number(token):
+class valued(token):
+    pass
+
+class number(valued):
     def __init__(self, body, pos, radix, floated):
         token.__init__(self, body, pos)
         self.radix   = radix
         self.floated = floated
+        if floated:
+            self.value = float(body)
+        elif radix == 0:
+            self.value = int(body)
+        else:
+            self.value = 0
+            for ch in body[2:]:
+                n = "0123456789abcdef".find(ch)
+                self.value = self.value * radix + n
 
-class stringliteral(token):
-    pass
+class stringliteral(valued):
+    def __init__(self, body, pos):
+        token.__init__(self, body, pos)
+        import ast
+        self.value = ast.literal_eval(body)
 
 class identifier(token):
     pass
 
-punctuation = {
-    ":="  : assignment,
-    "<"   : lt,
-    ">"   : gt,
-    "<="  : le,
-    ">="  : ge,
-    "="   : eq,
-    "!="  : ne,
-    "+"   : plus,
-    "-"   : minus,
-    "*"   : asterisk,
-    "/"   : divide,
-    "mod" : mod,
-    "and" : land,
-    "or"  : lor,
-    "not" : lnot,
-    "=>"  : lergo,
-    "("   : left_paren,
-    ")"   : right_paren,
-    "["   : left_bracket,
-    "]"   : right_bracket,
-    "{"   : left_brace,
-    "}"   : right_brace,
-    "."   : dot,
-    ","   : comma,
-    ":"   : colon,
-    ";"   : semicolon,
-    "|"   : bar,
-    "^"   : caret
-}
+punctuation = [
+    (":="  , assignment),
+    ("=>"  , lergo),
+    ("<="  , le),
+    (">="  , ge),
+    ("<"   , lt),
+    (">"   , gt),
+    ("="   , eq),
+    ("!="  , ne),
+    ("+"   , plus),
+    ("-"   , minus),
+    ("*"   , asterisk),
+    ("/"   , divide),
+    ("mod" , mod),
+    ("and" , land),
+    ("or"  , lor),
+    ("not" , lnot),
+    ("("   , left_paren),
+    (")"   , right_paren),
+    ("["   , left_bracket),
+    ("]"   , right_bracket),
+    ("{"   , left_brace),
+    ("}"   , right_brace),
+    ("."   , dot),
+    (","   , comma),
+    (":"   , colon),
+    (";"   , semicolon),
+    ("|"   , bar),
+    ("^"   , caret)
+]
 
 COMMENT_START = "(#"
 COMMENT_END   = "#)"
@@ -171,7 +186,8 @@ BASES = {
 class lex(object):
     class lexerror(Exception):
         def __init__(self, lex, error):
-            print("Lexical error: '{}' at {}".format(error, str(lex.reader.posget())))
+            print("Lexical error: '{}' at {}".format(error, 
+                                                     str(lex.reader.posget())))
 
     class notoken(lexerror):
         def __init__(self, lex):
@@ -223,7 +239,7 @@ class lex(object):
         # keyword or punctuation
         #
         # goes before number, because ".1" is *not* a valid number
-        for word, ttype in punctuation.items():
+        for word, ttype in punctuation:
             if self.accept(word):
                 return ttype(word, pos)
 
@@ -297,6 +313,7 @@ class lex(object):
             if ch == "":
                 break
             # unicode(ch) for Python2
+            # s/unicode(ch)/ch/ for Python3
             uc = unicodedata.category(ch)[0]
             if ch == "_" or uc == "L" or (count > 0 and uc == "N"):
                 count += 1

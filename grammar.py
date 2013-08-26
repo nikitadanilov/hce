@@ -19,7 +19,7 @@ order ::= add { ('<'|'>'|'<='|'>='|'='|'!=') add }
 add   ::= mul  { ('+'|'-') mul  }
 mul   ::= unary { ('*'|'/'|'mod') unary  }
 unary ::= ['+'|'-'|'not'] atom
-atom  ::== number | identifier | string | '(' exp ')'
+atom  ::= number | identifier | string | '(' exp ')'
 ''' 
 
 def parentset(node, parent):
@@ -40,20 +40,25 @@ if __name__ == "__main__":
     import reader
 
     s = S(parser.pushstream(lex.lex(reader.filereader(sys.stdin))))
-    print(s.parse())
-    print(s.pprint())
-    print(s.printexp())
-    assert s.atend() 
+    parsed = s.parse()
+    print("here")
+    if not parsed:
+        print("Cannot parse")
+    elif not s.atend():
+        print("Garbage after S")
+    else:
+        print(s.pprint())
+        print(s.printexp())
 
-    s.visit(parentset)
-    s.visit(tokenset)
-    s.reform([exp.simplify_depth], [exp.simplify_arith])
-    s.visit(parentset)
-    s.visit(block.blockset)
-    s.visit(block.declsset)
-    s.visit(block.namecheck)
-    print(s.pprint())
-    print(s.printexp())
+        s.visit(parentset)
+        s.visit(tokenset)
+        s.reform([exp.simplify_depth], [exp.simplify_arith])
+        s.visit(parentset)
+        s.visit(block.blockset)
+        s.visit(block.declsset)
+        s.visit(block.namecheck)
+        print(s.pprint())
+        print(s.printexp())
 
 
 '''
@@ -73,7 +78,7 @@ if __name__ == "__main__":
              |
                  y := 2;
                  [   xx : y; 
-                     z1 : xx |]]]]]
+                     z1 : xx | xx := 0t101010 + "432423\n"]]]]]
 '''
 #import cProfile
 #cProfile.run('for x in xrange(0, 500): exp(pushstream(lex.lex(reader.stringreader("1-(+1/-c)*(+d mod 0) < (# here! #) x_3 and not (y * 3 < 1/z)")))).parse()')

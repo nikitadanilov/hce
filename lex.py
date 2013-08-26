@@ -127,7 +127,6 @@ class number(valued):
             self.value = float(body)
         else:
             self.value = int(body, base = 0)
-        print(body, " -> ", self.value)
 
 class stringliteral(valued):
     def __init__(self, body, pos):

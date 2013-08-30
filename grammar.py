@@ -1,3 +1,5 @@
+import tree
+import proarkhe
 import parser
 import lex
 
@@ -26,8 +28,8 @@ def parentset(node, parent):
     node.parent = parent
     return True
 
-def tokenset(node, parent):
-    if not node.start and node.children:
+def tokenset(node, order):
+    if order == tree.tnode.WALK_POST and (not node.start and node.children):
         node.start = node.children[0].start
         node.end   = node.children[-1].end
     return True
@@ -41,7 +43,6 @@ if __name__ == "__main__":
 
     s = S(parser.pushstream(lex.lex(reader.filereader(sys.stdin))))
     parsed = s.parse()
-    print("here")
     if not parsed:
         print("Cannot parse")
     elif not s.atend():
@@ -50,8 +51,9 @@ if __name__ == "__main__":
         print(s.pprint())
         print(s.printexp())
 
+        s.block = proarkhe.proarkhe()
         s.visit(parentset)
-        s.visit(tokenset)
+        s.walk(tokenset)
         s.reform([exp.simplify_depth], [exp.simplify_arith])
         s.visit(parentset)
         s.visit(block.blockset)
@@ -63,12 +65,11 @@ if __name__ == "__main__":
 
 '''
 [   c: c; (# not very well-founded #)
-    a: c;
-    OMEGA : OMEGA
+    a: c
 | 
     a := a + 1 * c; 
     c := 6 - a + c + a * 0 + OMEGA; 
-    a := (a) + 1 + c; 
+    a := (a) + 1 + c + a*0 + 2 + 0*a;
     [|
          [   y  : a; 
              z  : c; 
@@ -78,7 +79,8 @@ if __name__ == "__main__":
              |
                  y := 2;
                  [   xx : y; 
-                     z1 : xx | xx := 0t101010 + "432423\n"]]]]]
+                     z1 : xx | xx := 0b101010 + "432423\n";
+                               z1 := z1 and (y or not c) or false]]]]]
 '''
 #import cProfile
 #cProfile.run('for x in xrange(0, 500): exp(pushstream(lex.lex(reader.stringreader("1-(+1/-c)*(+d mod 0) < (# here! #) x_3 and not (y * 3 < 1/z)")))).parse()')

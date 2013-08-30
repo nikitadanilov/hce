@@ -21,7 +21,7 @@ class tnode(object):
     def walk(self, cb):
         cb(self, tnode.WALK_PRE)
         for c in self.children:
-            c.walk(cb, self)
+            c.walk(cb)
             cb(self, tnode.WALK_IN)
         cb(self, tnode.WALK_POST)
 

@@ -11,6 +11,12 @@ class block(parser.node):
             self.parseadd(decls) and self.oneof([lex.bar]) and \
             self.parseadd(stmt.stmts) and self.oneof([lex.right_bracket])
 
+    def lookup(self, name):
+        return self.decls[name]
+
+    def bound(self, name):
+        return name in self.decls
+
 class decls(parser.node):
     def parse0(self):
         return self.nlist(decl, [lex.semicolon], parser.ASSOC_NONE, 0)
@@ -49,16 +55,20 @@ def declsset(node, parent):
 
 def allnames(node):
     names = {}
-    parent = node
+    parent = node.block
     while parent != None:
-        if isinstance(parent, block):
-            names.update(parent.decls)
-        parent = parent.parent
+        names.update(parent.decls)
+        parent = parent.block
     return names
 
 def namecheck(node, parent):
     if isinstance(node, lex.identifier):
-        if not node.body in allnames(node):
+        b = node.block
+        while b != None:
+            if b.bound(node.body):
+                break
+            b = b.block
+        else:
             raise unknownname(node.start, node.name())
     return True
 

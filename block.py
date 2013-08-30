@@ -47,10 +47,12 @@ def declsset(node, parent):
     if isinstance(node, decl):
         v = node.children[0]
         name = v.body
-        block = node.block
-        if name in allnames(block):
-            raise duplicatename(v.start, v.name(), allnames(block)[name])
-        block.decls[name] = node
+        b = node.block
+        while b != None:
+            if b.bound(name):
+                raise duplicatename(v.start, v.name(), b.lookup(name))
+            b = b.block
+        node.block.decls[name] = node
     return True
 
 def allnames(node):

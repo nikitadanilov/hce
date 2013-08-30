@@ -43,34 +43,34 @@ def blockset(node, parent):
             node.block = parent.block
     return True
 
+def blockchain(node):
+    block = node.block
+    while block != None:
+        yield block
+        block = block.block
+
+def boundchain(node, name):
+    return [b for b in blockchain(node) if b.bound(name)]
+
 def declsset(node, parent):
     if isinstance(node, decl):
         v = node.children[0]
         name = v.body
-        b = node.block
-        while b != None:
-            if b.bound(name):
-                raise duplicatename(v.start, v.name(), b.lookup(name))
-            b = b.block
+        if boundchain(node, name):
+            raise duplicatename(v.start, v.name(), 
+                                boundchain(node, name)[0].lookup(name))
         node.block.decls[name] = node
     return True
 
 def allnames(node):
     names = {}
-    parent = node.block
-    while parent != None:
-        names.update(parent.decls)
-        parent = parent.block
+    for b in blockchain(node):
+        names.update(b.decls) 
     return names
 
 def namecheck(node, parent):
     if isinstance(node, lex.identifier):
-        b = node.block
-        while b != None:
-            if b.bound(node.body):
-                break
-            b = b.block
-        else:
+        if not boundchain(node, node.body):
             raise unknownname(node.start, node.name())
     return True
 

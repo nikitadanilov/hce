@@ -150,10 +150,6 @@ punctuation = [
     ("-"   , minus),
     ("*"   , asterisk),
     ("/"   , divide),
-    ("mod" , mod),
-    ("and" , land),
-    ("or"  , lor),
-    ("not" , lnot),
     ("("   , left_paren),
     (")"   , right_paren),
     ("["   , left_bracket),
@@ -167,6 +163,13 @@ punctuation = [
     ("|"   , bar),
     ("^"   , caret)
 ]
+
+keyword = {
+    "mod" : mod,
+    "and" : land,
+    "or"  : lor,
+    "not" : lnot
+};
 
 COMMENT_START = "(#"
 COMMENT_END   = "#)"
@@ -231,7 +234,7 @@ class lex(object):
         count = 0
         self.word = ""
 
-        # keyword or punctuation
+        # punctuation
         #
         # goes before number, because ".1" is *not* a valid number
         for word, ttype in punctuation:
@@ -318,7 +321,10 @@ class lex(object):
 
         if count > 0:
             self.move(count)
-            return identifier(self.word, pos)
+            if self.word in keyword:
+                return keyword[self.word](self.word, pos)
+            else:
+                return identifier(self.word, pos)
 
         raise lex.notoken(self)
         

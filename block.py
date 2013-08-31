@@ -48,9 +48,9 @@ def declsset(node, parent):
     if isinstance(node, decl):
         v = node.children[0]
         name = v.body
-        if node.boundchain(name):
-            raise duplicatename(v.start, v.name(), 
-                                node.boundchain(name)[0].lookup(name))
+        chain = node.boundchain(name)
+        if chain:
+            raise duplicatename(v.start, v.name(), chain[0])
         node.block.decls[name] = node
     return True
 
@@ -62,7 +62,10 @@ def allnames(node):
 
 def namecheck(node, parent):
     if isinstance(node, lex.identifier):
-        if not node.boundchain(node.body):
+        chain = node.boundchain(node.body)
+        if chain:
+            node.decl = chain[0]
+        else:
             raise unknownname(node.start, node.name())
     return True
 

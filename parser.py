@@ -119,7 +119,7 @@ class node(tree.tnode):
             block = block.block
 
     def boundchain(self, name):
-        return [b for b in self.blockchain() if b.bound(name)]
+        return [b.lookup(name) for b in self.blockchain() if b.bound(name)]
 
 ASSOC_LEFT  = 1
 ASSOC_RIGHT = 2

@@ -20,7 +20,7 @@ class token(parser.node):
         return self.body
 
     def __str__(self):
-        return "{}:{}@{}".format(type(self), self.body, self.pos)
+        return "{}:{}@{}".format(self.__class__.__name__, self.body, self.pos)
 
 class group(token):
     pass
@@ -126,6 +126,9 @@ class number(valued):
         if floated:
             self.value = float(body)
         else:
+            # strip leading zeroes: int("01", 0) raises ValueError.
+            while self.radix == 0 and body[0] == "0" and len(body) > 1:
+                body = body[1:]
             self.value = int(body, base = 0)
 
 class stringliteral(valued):

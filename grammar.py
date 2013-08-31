@@ -42,8 +42,7 @@ if __name__ == "__main__":
     import reader
 
     s = S(parser.pushstream(lex.lex(reader.filereader(sys.stdin))))
-    parsed = s.parse()
-    if not parsed:
+    if not s.parse():
         print("Cannot parse")
     elif not s.atend():
         print("Garbage after S")

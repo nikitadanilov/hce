@@ -24,6 +24,7 @@ class reader(object):
         end = start + size
         while len(self.ahead) < end and not self.eof:
             ch = self.get()
+            assert len(ch) < 2
             self.eof = (ch == "")
             self.ahead += ch
         return self.ahead[start : end]

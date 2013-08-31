@@ -112,6 +112,15 @@ class node(tree.tnode):
             self.parseadd(longest)
         return longest != None
 
+    def blockchain(self):
+        block = self.block
+        while block != None:
+            yield block
+            block = block.block
+
+    def boundchain(self, name):
+        return [b for b in self.blockchain() if b.bound(name)]
+
 ASSOC_LEFT  = 1
 ASSOC_RIGHT = 2
 ASSOC_NONE  = 3

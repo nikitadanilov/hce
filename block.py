@@ -17,6 +17,7 @@ class block(parser.node):
     def bound(self, name):
         return name in self.decls
 
+
 class decls(parser.node):
     def parse0(self):
         return self.nlist(decl, [lex.semicolon], parser.ASSOC_NONE, 0)
@@ -43,34 +44,25 @@ def blockset(node, parent):
             node.block = parent.block
     return True
 
-def blockchain(node):
-    block = node.block
-    while block != None:
-        yield block
-        block = block.block
-
-def boundchain(node, name):
-    return [b for b in blockchain(node) if b.bound(name)]
-
 def declsset(node, parent):
     if isinstance(node, decl):
         v = node.children[0]
         name = v.body
-        if boundchain(node, name):
+        if node.boundchain(name):
             raise duplicatename(v.start, v.name(), 
-                                boundchain(node, name)[0].lookup(name))
+                                node.boundchain(name)[0].lookup(name))
         node.block.decls[name] = node
     return True
 
 def allnames(node):
     names = {}
-    for b in blockchain(node):
+    for b in node.blockchain():
         names.update(b.decls) 
     return names
 
 def namecheck(node, parent):
     if isinstance(node, lex.identifier):
-        if not boundchain(node, node.body):
+        if not node.boundchain(node.body):
             raise unknownname(node.start, node.name())
     return True
 

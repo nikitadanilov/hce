@@ -35,11 +35,18 @@ class unary(parser.node):
 
 class atom(parser.node):
     def parse0(self):
+        self.push()
         n = self.oneofdict({lex.number : True, lex.identifier : True,
-                               lex.stringliteral : True, lex.left_paren : +2})
+                            lex.stringliteral : True,
+                            lex.left_bracket : +3, lex.left_paren : +2})
+        if n == +3:
+            self.rollback()
+            return self.parseadd(block.block)
         if n == +2:
+            self.pop()
             return self.parseadd(exp) and self.oneof([lex.right_paren])
         else:
+            self.pop()
             return n
 
 

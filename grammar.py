@@ -21,7 +21,7 @@ order ::= add { ('<'|'>'|'<='|'>='|'='|'!=') add }
 add   ::= mul  { ('+'|'-') mul  }
 mul   ::= unary { ('*'|'/'|'mod') unary  }
 unary ::= ['+'|'-'|'not'] atom
-atom  ::= number | identifier | string | '(' exp ')'
+atom  ::= number | identifier | string | '(' exp ')' | block
 ''' 
 
 def parentset(node, parent):

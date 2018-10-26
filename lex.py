@@ -276,8 +276,8 @@ class lex(object):
                 allowed = string.digits + ".eE"
 
         if count > 0:
-            # "0t3" is invalid, but "0t13" is valid 
-            # (parses as "0t1" followed by "3")
+            # "0b3" is invalid, but "0b13" is valid 
+            # (parses as "0b1" followed by "3")
             # "1e+" and "1e" are invalid, but "1e+2" is valid
             if (r_pos != 0 and r_pos >= count) or \
                (e_pos != 0 and e_pos >= count):
